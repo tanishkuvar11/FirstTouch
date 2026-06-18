@@ -37,6 +37,6 @@ echo "[start] bootstrapping Context Forge (mint token + federate MCP server)"
 ) &
 
 # The API talks to the gateway at http://127.0.0.1:4444/mcp (whatif_chain default),
-# so CF_GATEWAY_DISABLED must stay UNSET here. Granite comes from HF_TOKEN on deploy.
+# so CF_GATEWAY_DISABLED must stay UNSET here. Granite comes from watsonx creds on deploy.
 echo "[start] API (uvicorn) on :$APP_PORT"
 exec "$VENV/python" -m uvicorn main:app --host 0.0.0.0 --port "$APP_PORT"

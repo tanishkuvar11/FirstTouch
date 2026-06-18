@@ -3,7 +3,7 @@ deployed FirstTouch serves REAL Granite output instantly to every visitor with n
 live model needed at request time.
 
 Run once on any machine that can reach a Granite backend (local Ollama, or
-HF_TOKEN / watsonx creds for cloud Granite). It writes to the on-disk cache
+watsonx creds for cloud Granite). It writes to the on-disk cache
 (backend/.firsttouch_cache/assess_cache.json + explain_cache.json), which can be
 shipped with the backend so the deployed app replays it.
 
@@ -58,9 +58,9 @@ def precompute(match_limit=None, per_match=None, only_match=None):
         matches = matches[:match_limit]
 
     if not granite_client.active_backend().startswith("granite"):
-        print("WARNING: no live Granite backend reachable (watsonx / HF / Ollama).")
+        print("WARNING: no live Granite backend reachable (watsonx / Ollama).")
         print("         The cache would be filled with LOCAL estimates, not Granite.")
-        print("         Start Ollama, or set HF_TOKEN / watsonx creds, then re-run.")
+        print("         Start Ollama, or set watsonx creds, then re-run.")
         return
 
     total_done = total_skipped = total_failed = 0

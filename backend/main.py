@@ -37,7 +37,7 @@ def _startup_banner():
     print(f"FirstTouch API ready. Granite backend: {backend}")
     print(f"Baked cache: {n_assess} assessments, {n_prose} prose reads on disk.")
     if backend.startswith("local"):
-        print("NOTE: serving LOCAL estimates. Set HF_TOKEN or watsonx creds, or")
+        print("NOTE: serving LOCAL estimates. Set watsonx creds, or")
         print("      ship a precomputed cache, to serve real Granite on deploy.")
     print("=" * 64)
 

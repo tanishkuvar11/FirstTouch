@@ -18,12 +18,16 @@ over localhost, so the What-If path is genuinely served through Context Forge
 The Space free CPU tier (2 vCPU / 16 GB) is large enough to run the full live
 stack. The frontend is hosted separately (Vercel) and points at this Space URL.
 
-## Required secret
+## Required secrets
 
-Set in **Settings -> Variables and secrets**:
+Set in **Settings -> Variables and secrets**. The live Granite backend is IBM
+watsonx.ai:
 
-- `HF_TOKEN` - a Hugging Face access token (Read scope). This is the live Granite
-  inference backend.
+- `WATSONX_API_KEY` - an IBM Cloud API key.
+- `WATSONX_PROJECT_ID` - a watsonx.ai project with a Runtime service associated.
+- `WATSONX_URL` - the region endpoint, e.g. `https://eu-de.ml.cloud.ibm.com`
+  (Frankfurt) or `https://us-south.ml.cloud.ibm.com` (Dallas). Must match the
+  region of the project and its Runtime.
 
 ## Recommended secrets (override the weak dev defaults)
 
