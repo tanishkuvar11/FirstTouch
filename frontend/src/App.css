@@ -144,10 +144,6 @@ button {
 .app-footer-gh:hover { color: var(--gold); }
 .app-footer-gh-arrow { font-size: 11px; opacity: 0.8; }
 
-@media (max-width: 760px) {
-  .app-footer-center { display: none; }
-}
-
 .panel-left {
   width: 260px;
   min-width: 260px;
