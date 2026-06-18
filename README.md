@@ -1,6 +1,6 @@
 # FirstTouch
 
-### Beyond highlights, into insights.
+### Beyond Highlights, Into Insights.
 
 A highlight reel shows you the goal. FirstTouch shows you the **decision**. It rebuilds a
 FIFA World Cup 2022 moment as an interactive 3D scene, all 22 players in their real
@@ -8,7 +8,7 @@ positions, and answers three questions the replay never does:
 
 > **What did the player see? What were his options? Was his decision right?**
 
-Then **IBM Granite** on **watsonx.ai** scores the call and explains it like a broadcast
+ **IBM Granite** on **watsonx.ai** then scores the call and explains it like a broadcast
 analyst, grounded in the real tracking data so it cannot invent what did not happen.
 
 Built for the **IBM SkillsBuild AI Builders Challenge**.
@@ -18,12 +18,11 @@ Built for the **IBM SkillsBuild AI Builders Challenge**.
 
 ---
 
-## IBM tech stack
+## IBM Tech Stack
 
 | Technology | What it does here |
 | --- | --- |
 | **IBM Granite** | Scores the decision (strict JSON), writes the streamed analyst prose, reads the manager's setup, and gives the What-If verdict. |
-| **IBM watsonx.ai** | Serves Granite in production (`ibm/granite-4-h-small`, chat API). |
 | **IBM Context Forge (MCP Gateway)** | Exposes the expected-threat option engine as MCP tools; What-If calls them through the gateway. |
 | **LangChain (LCEL)** | Runs the What-If chain (`prompt \| Granite \| parse`) and renders every Granite prompt. |
 
@@ -32,21 +31,19 @@ Built for the **IBM SkillsBuild AI Builders Challenge**.
 **3D scene**
 - Rotatable 3D pitch (Three.js): drag to rotate, scroll to zoom, double-click to recentre.
 - All 22 players with real kit colours, shirt numbers, the ball, and an action arrow.
-- Player identity rebuilt from shot frames, line-ups and jersey data.
-- Every player flagged **exact / inferred / unknown**; hover for name, position and photo.
+- Player identity **(exact / inferred / unknown)** rebuilt from shot frames, line-ups and jersey data.
 - Passing lanes drawn green (open) or red (blocked), computed from the freeze frame.
-- Broadcast scorebug and on-pitch readouts (pressure, xG, distances).
 
 **Decision panel (four tabs)**
 - **Decision:** Action Quality score 0 to 100, split into Decision, Execution, Difficulty, with reasoning and pros/cons.
-- **Profile:** Stakes gauge (how much it mattered) plus the Decision DNA radar (vision, risk).
-- **Consequence Chain:** the real possession touch by touch, ending in the true outcome; click to jump.
-- **What If:** every alternative re-valued on expected threat, a Granite verdict, and a ghost arrow on the pitch.
+- **Profile:** Stakes gauge (how much it mattered) plus the Decision DNA radar (difficulty, vision, risk, leverage, execution).
+- **Consequence Chain:** The real possession touch by touch, ending in the true outcome; click to jump.
+- **What If:** Every alternative re-valued on expected threat, a Granite verdict, and a ghost arrow on the pitch.
 
 **Match and analyst**
 - Streamed analyst prose with the portrait reacting (pleased / neutral / gutted).
 - Momentum timeline with goal and card markers; click to jump.
-- Line-ups and Tactics view: formations, substitutions, managers, plus a Granite manager read.
+- Line-ups and Tactics view: Formations, Substitutions, Managers, plus a Granite manager read.
 - Four multilingual analysts (see below).
 
 ## Analysts and languages
@@ -148,6 +145,15 @@ backend/   main.py (API) · data_layer (360 enrich+cache) · tactical_analysis (
 frontend/  src/components (3D pitch, decision panel, timeline, line-ups, language)
            src (scoring, DNA, stakes, metrics, i18n, kit colours)
 ```
+
+## Tech stack
+
+- **Frontend:** React 18, Vite, Three.js, Framer Motion, Axios
+- **Backend:** Python 3.11, FastAPI, Uvicorn
+- **AI:** IBM Granite via IBM watsonx.ai; Ollama (local dev)
+- **Agentic layer:** IBM Context Forge (MCP gateway), MCP, LangChain (LCEL) + langchain-mcp-adapters
+- **Data:** StatsBomb Open Data, statsbombpy, pandas
+- **Deploy:** Docker, Hugging Face Spaces (backend), Vercel (frontend)
 
 ## Principles
 
