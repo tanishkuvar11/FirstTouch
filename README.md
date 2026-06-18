@@ -8,45 +8,46 @@ positions, and answers three questions the replay never does:
 
 > **What did the player see? What were his options? Was his decision right?**
 
- **IBM Granite** on **watsonx.ai** then scores the call and explains it like a broadcast
+**IBM Granite** on **watsonx.ai** then scores the call and explains it like a broadcast
 analyst, grounded in the real tracking data so it cannot invent what did not happen.
 
 Built for the **IBM SkillsBuild AI Builders Challenge**.
 
-- **Live app:** https://first-touch-phi.vercel.app/
+- **Live App:** https://first-touch-phi.vercel.app/
 - **Source:** https://github.com/tanishkuvar11/FirstTouch
 
 ---
 
 ## IBM Tech Stack
 
-| Technology | What it does here |
+| Technology | What It Does Here |
 | --- | --- |
 | **IBM Granite** | Scores the decision (strict JSON), writes the streamed analyst prose, reads the manager's setup, and gives the What-If verdict. |
+| **IBM watsonx.ai** | Serves Granite in production (`ibm/granite-4-h-small`, chat API). |
 | **IBM Context Forge (MCP Gateway)** | Exposes the expected-threat option engine as MCP tools; What-If calls them through the gateway. |
 | **LangChain (LCEL)** | Runs the What-If chain (`prompt \| Granite \| parse`) and renders every Granite prompt. |
 
 ## Features
 
-**3D scene**
+**3D Scene**
 - Rotatable 3D pitch (Three.js): drag to rotate, scroll to zoom, double-click to recentre.
 - All 22 players with real kit colours, shirt numbers, the ball, and an action arrow.
 - Player identity **(exact / inferred / unknown)** rebuilt from shot frames, line-ups and jersey data.
 - Passing lanes drawn green (open) or red (blocked), computed from the freeze frame.
 
-**Decision panel (four tabs)**
+**Decision Panel (Four Tabs)**
 - **Decision:** Action Quality score 0 to 100, split into Decision, Execution, Difficulty, with reasoning and pros/cons.
 - **Profile:** Stakes gauge (how much it mattered) plus the Decision DNA radar (difficulty, vision, risk, leverage, execution).
 - **Consequence Chain:** The real possession touch by touch, ending in the true outcome; click to jump.
 - **What If:** Every alternative re-valued on expected threat, a Granite verdict, and a ghost arrow on the pitch.
 
-**Match and analyst**
+**Match and Analyst**
 - Streamed analyst prose with the portrait reacting (pleased / neutral / gutted).
 - Momentum timeline with goal and card markers; click to jump.
 - Line-ups and Tactics view: Formations, Substitutions, Managers, plus a Granite manager read.
 - Four multilingual analysts (see below).
 
-## Analysts and languages
+## Analysts and Languages
 
 | Analyst | Language | Role |
 | --- | --- | --- |
@@ -60,25 +61,25 @@ Built for the **IBM SkillsBuild AI Builders Challenge**.
 - Each analyst's national allegiance colours the emotion, never the facts.
 - Each persona has three mood portraits that track the moment.
 
-## Three independent judgements
+## Three Independent Judgements
 
 Kept separate instead of collapsed into one number:
 
-- **Action Quality (stage-blind):** decision, execution and difficulty of the action itself. Judged the same in a dead rubber and a final.
-- **Stakes:** how much the moment mattered (stage, minute, scoreline), kept apart so it never inflates the skill score.
-- **Decision DNA:** the player's signature, shown as a radar (vision, risk).
+- **Action Quality (Stage-Blind):** Decision, execution and difficulty of the action itself. Judged the same in a dead rubber and a final.
+- **Stakes:** How much the moment mattered (stage, minute, scoreline), kept apart so it never inflates the skill score.
+- **Decision DNA:** The player's signature, shown as a radar (vision, risk).
 
 Difficulty is computed geometrically from the real frame, and a Python "Truth Anchor"
 vetoes any judgement the geometry contradicts.
 
-## How a moment flows
+## How a Moment Flows
 
 1. **Pick** a match and moment; backend serves the events and 360 frame.
-2. **Reconstruct:** enrich the frame (realign reflected frames, resolve identities, compute lanes and distances).
+2. **Reconstruct:** Enrich the frame (realign reflected frames, resolve identities, compute lanes and distances).
 3. **Render** the 22 players, ball and lanes in 3D.
 4. **Assess** (`/assess`): Granite returns a JSON verdict from a coordinate Field Map.
-5. **Explain** (`/explain/stream`): a streamed, grounded read.
-6. **Explore** (`/whatif`): options valued via Context Forge, plus a Granite verdict.
+5. **Explain** (`/explain/stream`): A streamed, grounded read.
+6. **Explore** (`/whatif`): Options valued via Context Forge, plus a Granite verdict.
 
 Every Granite result is cached per moment, so a moment seen once replays instantly.
 
@@ -109,7 +110,7 @@ data_layer   granite_client   whatif_chain   tactical_analysis
 - The fallback is a full tactical engine, labelled a local estimate, so the app is never broken.
 - **Endpoints:** `/health` · `/matches` · `/matches/{id}/events` · `/matches/{id}/frames/{event_id}` · `/matches/{id}/teamsheet` · `POST /assess` · `POST /explain/stream` · `POST /whatif` · `POST /manager-tactics`
 
-## Run locally
+## Run Locally
 
 ```bash
 cd backend && pip install -r requirements.txt && uvicorn main:app --reload --port 8000
@@ -132,10 +133,10 @@ WATSONX_MODEL_ID=ibm/granite-4-h-small
 
 - **Backend:** Hugging Face Space (Docker). One container runs the API, MCP server and Context Forge gateway, so What-If runs through the gateway in production. See `backend/Dockerfile`, `backend/start_deploy.sh`, `backend/README.md`.
 - **Frontend:** Vercel. Set `VITE_API_URL` to the Space URL.
-- **Live Granite:** set the `WATSONX_*` Space secrets; `/health` confirms it.
+- **Live Granite:** Set the `WATSONX_*` Space secrets; `/health` confirms it.
 - Granite output can be pre-baked (`backend/precompute_cache.py`) and shipped for instant cold starts.
 
-## Project layout
+## Project Layout
 
 ```
 backend/   main.py (API) · data_layer (360 enrich+cache) · tactical_analysis (geometry)
@@ -146,21 +147,21 @@ frontend/  src/components (3D pitch, decision panel, timeline, line-ups, languag
            src (scoring, DNA, stakes, metrics, i18n, kit colours)
 ```
 
-## Tech stack
+## Tech Stack
 
 - **Frontend:** React 18, Vite, Three.js, Framer Motion, Axios
 - **Backend:** Python 3.11, FastAPI, Uvicorn
 - **AI:** IBM Granite via IBM watsonx.ai; Ollama (local dev)
-- **Agentic layer:** IBM Context Forge (MCP gateway), MCP, LangChain (LCEL) + langchain-mcp-adapters
+- **Agentic Layer:** IBM Context Forge (MCP gateway), MCP, LangChain (LCEL) + langchain-mcp-adapters
 - **Data:** StatsBomb Open Data, statsbombpy, pandas
 - **Deploy:** Docker, Hugging Face Spaces (backend), Vercel (frontend)
 
 ## Principles
 
 - **Grounded:** Granite gets real facts only; the Truth Anchor blocks anything invented.
-- **Citable models:** option values use expected threat (xT), not hand-tuned guesses.
-- **Honest:** identity confidence flags; fallback output is labelled.
-- **Never broken:** every cloud dependency has an in-process fallback.
+- **Citable Models:** Option values use expected threat (xT), not hand-tuned guesses.
+- **Honest:** Identity confidence flags; fallback output is labelled.
+- **Never Broken:** Every cloud dependency has an in-process fallback.
 
 ---
 
