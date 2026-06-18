@@ -404,6 +404,27 @@ def _hf_present() -> bool:
     return bool(tok) and tok not in {"your_hf_token", "hf_xxx"}
 
 
+def _replicate_present() -> bool:
+    tok = os.getenv("REPLICATE_API_TOKEN", "")
+    return bool(tok) and tok not in {"your_replicate_token", "r8_xxx"}
+
+
+def _replicate_generate(prompt: str, max_tokens: int = 180, temperature: float = 0.55) -> str:
+    """Granite via Replicate — a cloud backend that works from a deployed server
+    with no GPU, serving the current granite-3.3-8b-instruct. The token is read
+    from REPLICATE_API_TOKEN; the output streams as text chunks we join."""
+    import replicate
+    model = os.getenv("REPLICATE_MODEL", "ibm-granite/granite-3.3-8b-instruct")
+    out = replicate.run(model, input={
+        "prompt": prompt,
+        "max_tokens": max_tokens,
+        "temperature": temperature,
+    })
+    if isinstance(out, str):
+        return out.strip()
+    return "".join(str(chunk) for chunk in out).strip()
+
+
 def _hf_generate(prompt: str, max_tokens: int = 180, temperature: float = 0.55) -> str:
     """Granite via the Hugging Face Inference API — a cloud backend that works
     from a deployed server (unlike local Ollama)."""
@@ -468,6 +489,8 @@ def active_backend() -> str:
     the app is serving Granite or the deterministic fallback."""
     if _credentials_present():
         return "granite:watsonx.ai"
+    if _replicate_present():
+        return "granite:Replicate"
     if _hf_present():
         return "granite:Hugging Face"
     if _ollama_available():
@@ -653,7 +676,18 @@ def open_stream(frame_context: dict):
         except Exception as exc:
             print(f"[granite/watsonx] falling back: {exc}")
 
-    # 2) Hugging Face Inference API
+    # 2) Replicate (cloud — current granite-3.3-8b-instruct, no GPU needed)
+    if _replicate_present():
+        try:
+            text = _replicate_generate(prompt)
+            if text:
+                clean = _strip_opener(_cap_sentences(_clean(text)))
+                meta = {"source": "granite", "via": "Replicate"}
+                return meta, _caching_stream(_chunk_text(clean), key, meta)
+        except Exception as exc:
+            print(f"[granite/replicate] falling back: {exc}")
+
+    # 3) Hugging Face Inference API
     if _hf_present():
         try:
             text = _hf_generate(prompt)
@@ -818,7 +852,16 @@ def get_explanation(frame_context: dict) -> dict:
         except Exception as exc:
             print(f"[granite/watsonx] falling back: {exc}")
 
-    # 2) Hugging Face Inference API (cloud — for deployed environments)
+    # 2) Replicate (cloud — current granite-3.3-8b-instruct)
+    if _replicate_present():
+        try:
+            text = _replicate_generate(prompt)
+            if text:
+                return {"explanation": _strip_opener(_cap_sentences(_clean(text))), "source": "granite", "via": "Replicate"}
+        except Exception as exc:
+            print(f"[granite/replicate] falling back: {exc}")
+
+    # 3) Hugging Face Inference API (cloud — for deployed environments)
     if _hf_present():
         try:
             text = _hf_generate(prompt)
@@ -1083,6 +1126,11 @@ def _complete(prompt: str, max_tokens: int, temperature: float,
             return _granite_generate(prompt, max_tokens, temperature), "watsonx.ai"
         except Exception as exc:
             print(f"[assess/watsonx] falling back: {exc}")
+    if _replicate_present():
+        try:
+            return _replicate_generate(prompt, max_tokens, temperature), "Replicate"
+        except Exception as exc:
+            print(f"[assess/replicate] falling back: {exc}")
     if _hf_present():
         try:
             return _hf_generate(prompt, max_tokens, temperature), "Hugging Face"

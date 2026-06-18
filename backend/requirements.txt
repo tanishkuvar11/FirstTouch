@@ -10,4 +10,5 @@ langchain-ollama
 langchain-mcp-adapters
 mcp
 huggingface_hub
+replicate
 python-dotenv
