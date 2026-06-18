@@ -1,0 +1,461 @@
+.cc {
+  margin-top: 4px;
+}
+
+.cc-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+/* a little gradient accent bar before the title */
+.cc-title::before {
+  content: '';
+  width: 3px;
+  height: 12px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #5aa9ff, var(--green));
+}
+
+.cc-real {
+  margin-left: 2px;
+  color: var(--text-3);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.cc-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.cc-spin {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--border-2);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: cc-spin 0.8s linear infinite;
+}
+
+@keyframes cc-spin { to { transform: rotate(360deg); } }
+
+/* mini pitch map: where every touch happened, with the move traced across it */
+.cc-pitch {
+  position: relative;
+  margin-bottom: 12px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border-2);
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(0, 229, 160, 0.06), transparent 60%),
+    linear-gradient(160deg, #163325, #0f2119);
+  animation: cc-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.cc-pitch-stage {
+  position: relative;
+}
+
+.cc-pitch svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  overflow: visible;
+}
+
+.cc-pitch-attack {
+  position: absolute;
+  top: 11px;
+  right: 13px;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  letter-spacing: 1.2px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.cc-pitch-line {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.cc-pitch-goal { stroke: rgba(255, 255, 255, 0.55); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.cc-pitch-spot { fill: rgba(255, 255, 255, 0.3); }
+
+.cc-pitch-path {
+  fill: none;
+  stroke: rgba(0, 229, 160, 0.85);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  stroke-dasharray: 3 2.5;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 2px rgba(0, 229, 160, 0.5));
+  animation: cc-flow 18s linear infinite;
+}
+
+@keyframes cc-flow { to { stroke-dashoffset: -200; } }
+
+.cc-pt {
+  stroke: #0b1410;
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+  transition: r 0.12s;
+  transform-box: fill-box;
+  transform-origin: center;
+  /* pop in one after another (delay set inline per touch); backwards fill keeps
+     them hidden until their turn, then settles to the class opacity */
+  animation: cc-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+.cc-pt:hover { stroke: #fff; }
+.cc-pt-home { fill: #5aa9ff; }
+.cc-pt-away { fill: #ff6b81; }
+.cc-pt-context { opacity: 0.45; }
+.cc-pt-active {
+  fill: var(--green);
+  stroke: #fff;
+  stroke-width: 0.8;
+}
+
+@keyframes cc-pop {
+  0%   { opacity: 0; transform: scale(0); }
+  70%  { opacity: 1; transform: scale(1.35); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* directional arrowheads along the move, fading in with the dots */
+.cc-pitch-arrow {
+  fill: rgba(0, 229, 160, 0.9);
+  animation: cc-arrow-in 0.3s ease backwards;
+}
+
+@keyframes cc-arrow-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* the shot trajectory (when the move ends in a shot), coloured by outcome */
+.cc-shot-g { animation: cc-arrow-in 0.35s ease backwards; }
+
+.cc-pitch-shot {
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 2.5px currentColor);
+}
+
+.cc-shot-goal { stroke: var(--green); color: var(--green); fill: var(--green); }
+.cc-shot-shot { stroke: var(--amber); color: var(--amber); fill: var(--amber); }
+.cc-shot-off  { stroke: #ff6b81; color: #ff6b81; fill: #ff6b81; }
+
+/* arrowhead stroke must not apply; only fill */
+.cc-pitch-shot-head { stroke: none; }
+
+/* hover tooltip: a little graphic card showing the action + player */
+.cc-tip {
+  position: absolute;
+  z-index: 4;
+  /* transform set inline so the card anchors toward the dot's side and never
+     spills outside the pitch */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 7px;
+  background: rgba(10, 16, 22, 0.97);
+  border: 1px solid var(--border-2);
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.55);
+  white-space: nowrap;
+  pointer-events: none;
+  font-size: 11px;
+  animation: cc-arrow-in 0.1s ease both;
+}
+
+/* the little pointer triangle, placed over the dot depending on the card's anchor */
+.cc-tip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  border: 5px solid transparent;
+  border-top-color: rgba(10, 16, 22, 0.97);
+}
+.cc-tip-c::after { left: 50%; margin-left: -5px; }
+.cc-tip-l::after { left: 12px; }
+.cc-tip-r::after { right: 12px; }
+
+.cc-tip-below::after {
+  top: auto;
+  bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: rgba(10, 16, 22, 0.97);
+}
+
+.cc-tip-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.cc-tip-home { background: #5aa9ff; }
+.cc-tip-away { background: #ff6b81; }
+
+.cc-tip-type {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.cc-tip-player { color: var(--text); font-weight: 600; }
+.cc-tip-player b {
+  color: var(--text-2);
+  font-weight: 700;
+  margin-right: 3px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cc-tip-out {
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+/* the chain, a vertical timeline */
+.cc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+/* the connecting line down the nodes, a soft team-to-team gradient */
+.cc-list::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(90, 169, 255, 0.55), rgba(255, 107, 129, 0.55));
+}
+
+.cc-step-item {
+  margin: 0;
+  padding: 0;
+  /* gentle staggered slide-in (delay set inline per row) */
+  animation: cc-in 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes cc-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.cc-step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 6px 8px 6px 22px;
+  margin: 2px 0;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  min-height: 28px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s, border-color 0.15s;
+}
+
+.cc-step:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--border-2);
+  transform: translateX(2px);
+}
+
+/* the opponent's bracketing touches (ball won before / lost after) — shown as
+   dimmed context so the team's own move still stands out */
+.cc-context { opacity: 0.48; }
+.cc-context:hover { opacity: 0.85; }
+
+.cc-bracket-tag {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+.cc-node {
+  position: absolute;
+  left: 1px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+  z-index: 1;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.cc-step:hover .cc-node { transform: scale(1.18); }
+
+.cc-home { background: #5aa9ff; box-shadow: 0 0 0 2px rgba(90, 169, 255, 0.2); }
+.cc-away { background: #ff6b81; box-shadow: 0 0 0 2px rgba(255, 107, 129, 0.2); }
+
+/* the selected moment: a soft green card + a pulsing node */
+.cc-active {
+  background: rgba(0, 229, 160, 0.1);
+  border-color: rgba(0, 229, 160, 0.4) !important;
+  box-shadow: 0 2px 12px rgba(0, 229, 160, 0.13);
+}
+
+.cc-active .cc-node {
+  animation: cc-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes cc-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 229, 160, 0.55); }
+  50%      { box-shadow: 0 0 0 6px rgba(0, 229, 160, 0); }
+}
+
+.cc-type {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-2);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+  padding: 2px 6px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.cc-player {
+  flex: 1;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.cc-player b {
+  display: inline-block;
+  min-width: 16px;
+  color: var(--text-2);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.cc-out {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--amber);
+  background: rgba(255, 184, 0, 0.12);
+  border-radius: 4px;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+.cc-here {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #04140f;
+  background: var(--green);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* terminal verdict — a richer outcome card, tinted by how the move resolved */
+.cc-verdict {
+  position: relative;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px 9px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-left: 3px solid var(--text-3);
+  overflow: hidden;
+}
+
+.cc-verdict-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--text-3);
+  flex-shrink: 0;
+}
+
+.cc-verdict-badge {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.cc-caption {
+  font-size: 11.5px;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+/* the "how it ended" line, forced onto its own row below the badge + caption */
+.cc-resolution {
+  flex-basis: 100%;
+  font-size: 11px;
+  color: var(--text-3);
+  line-height: 1.45;
+}
+
+.cc-goal {
+  border-left-color: var(--green);
+  background: linear-gradient(90deg, rgba(0, 229, 160, 0.13), var(--surface-2) 62%);
+}
+.cc-goal .cc-verdict-badge { color: var(--green); }
+.cc-goal .cc-verdict-dot { background: var(--green); animation: cc-pulse 1.8s ease-in-out infinite; }
+
+.cc-shot {
+  border-left-color: var(--amber);
+  background: linear-gradient(90deg, rgba(255, 184, 0, 0.11), var(--surface-2) 62%);
+}
+.cc-shot .cc-verdict-badge { color: var(--amber); }
+.cc-shot .cc-verdict-dot { background: var(--amber); }
+
+.cc-lost {
+  border-left-color: #ff6b81;
+  background: linear-gradient(90deg, rgba(255, 107, 129, 0.11), var(--surface-2) 62%);
+}
+.cc-lost .cc-verdict-badge { color: #ff6b81; }
+.cc-lost .cc-verdict-dot { background: #ff6b81; }
+
+.cc-neutral .cc-verdict-badge { color: var(--text-2); }

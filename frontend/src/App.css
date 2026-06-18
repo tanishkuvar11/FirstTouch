@@ -1,0 +1,421 @@
+/* FirstTouch design system — World Cup Qatar 2022 aesthetic.
+   Qatar maroon + desert gold, Islamic girih geometry. The official emblem/font
+   are proprietary; this evokes the look with original geometry and Saira. */
+
+/* Official Qatar2022 display face, self-hosted. Drop the file at
+   frontend/public/fonts/Qatar2022.ttf (Vite serves /public at the root).
+   If the file is absent the brand headings fall back to Rakkas. */
+@font-face {
+  font-family: 'Qatar2022';
+  src: url('/fonts/Qatar2022.otf') format('opentype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  /* Qatar maroon family — deep oxblood backgrounds */
+  --maroon-900:   #2a0710;
+  --bg:           #44091b;
+  --surface:      #5e0f23;
+  --surface-2:    #6e1228;
+  --surface-3:    #8a1538;   /* official "Qatar maroon" — used for active/hover */
+  /* gold-tinted hairline borders (the mockup outlines panels in thin gold) */
+  --border:       rgba(214, 178, 90, 0.20);
+  --border-2:     rgba(214, 178, 90, 0.38);
+
+  /* desert gold — replaces the old amber everywhere it's referenced */
+  --gold:         #e0bd63;
+  --gold-deep:    #c79a3e;
+  --amber:        #e0bd63;
+  --amber-dim:    rgba(224, 189, 99, 0.14);
+
+  /* seamless 8-point-star (khatam) lattice: stars at every tile centre AND
+     corner so it tessellates perfectly — abstract, aligned, no rotation */
+  --pattern:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23e0bd63' stroke-opacity='0.075' stroke-width='1'%3E%3Crect x='19' y='19' width='22' height='22'/%3E%3Cpolygon points='30,11 49,30 30,49 11,30'/%3E%3Crect x='-11' y='-11' width='22' height='22'/%3E%3Crect x='49' y='-11' width='22' height='22'/%3E%3Crect x='-11' y='49' width='22' height='22'/%3E%3Crect x='49' y='49' width='22' height='22'/%3E%3Cpolygon points='0,-19 19,0 0,19 -19,0'/%3E%3Cpolygon points='60,-19 79,0 60,19 41,0'/%3E%3Cpolygon points='0,41 19,60 0,79 -19,60'/%3E%3Cpolygon points='60,41 79,60 60,79 41,60'/%3E%3C/g%3E%3C/svg%3E");
+
+  /* data-viz accents (lanes, pressure, charts) — kept readable on maroon */
+  --blue:         #5cb0ff;
+  --red:          #ff5d78;
+  --green:        #2fe0a6;
+  --purple:       #c0a3ff;
+
+  /* warm cream text on maroon */
+  --text:         #f7ede0;
+  --text-2:       #e2c39a;   /* warm tan secondary */
+  --text-3:       #c79a3e;   /* muted gold for eyebrow labels */
+
+  --font:         'Sora', system-ui, sans-serif;
+  --font-cond:    'Saira Condensed', 'Sora', sans-serif;
+  /* brand display face: Arabic-styled Latin (WC2022 'Qatar2022' lookalike) for
+     the logo and the big headings only - NOT body, labels or data numbers. */
+  --font-display: 'Qatar2022', 'Rakkas', 'Saira Condensed', serif;
+  /* label/badge font: the same humanist face as the body so every small label
+     reads consistently. */
+  --font-mono:    'Sora', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background:
+    radial-gradient(120% 90% at 50% -10%, #6e1228 0%, #44091b 45%, #2a0710 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+/* Shell layout */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* footer */
+.app-footer {
+  flex-shrink: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 22px;
+  border-top: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.45));
+  font-size: 12px;
+  color: var(--text-3);
+}
+.app-footer-brand { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.app-footer-mark {
+  font-family: var(--font-display, inherit);
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+.app-footer-mark em { font-style: normal; color: var(--gold); }
+.app-footer-sub { color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.app-footer-center {
+  flex: 1;
+  text-align: center;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.app-footer-gh {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-2);
+  text-decoration: none;
+  transition: color 0.14s;
+}
+.app-footer-gh:hover { color: var(--gold); }
+.app-footer-gh-arrow { font-size: 11px; opacity: 0.8; }
+
+@media (max-width: 760px) {
+  .app-footer-center { display: none; }
+}
+
+.panel-left {
+  width: 260px;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  /* clean abstract geometric lattice over a soft maroon gradient */
+  background:
+    var(--pattern),
+    linear-gradient(180deg, var(--surface), #460b1c);
+  border-right: 1px solid var(--border);
+  min-height: 0;
+}
+
+.panel-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background:
+    radial-gradient(100% 80% at 50% 0%, #5e0f23 0%, #3c0817 60%, #2a0710 100%);
+}
+
+.panel-right {
+  width: 320px;
+  min-width: 320px;
+  /* clean abstract geometric lattice on the right column */
+  background:
+    var(--pattern),
+    linear-gradient(180deg, var(--surface), #460b1c);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.panel-formations {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  background:
+    radial-gradient(100% 80% at 50% 0%, #5e0f23 0%, #3c0817 60%, #2a0710 100%);
+}
+
+/* prominent entry into the Line-ups view, in the left panel under the match */
+.lineups-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 12px 6px;
+  padding: 9px 12px;
+  border: 1px solid #c9a44a;
+  border-radius: 13px;
+  background: linear-gradient(135deg, var(--gold), #d8a94a);
+  color: #2a0710;
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 3px 12px rgba(224, 189, 99, 0.28);
+  transition: transform 0.14s, box-shadow 0.14s, filter 0.14s;
+}
+.lineups-entry:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 18px rgba(224, 189, 99, 0.4);
+  filter: brightness(1.04);
+}
+.lineups-entry-ico {
+  color: #2a0710;
+  flex-shrink: 0;
+}
+.lineups-entry-txt { flex: 1; display: flex; flex-direction: column; line-height: 1.25; text-align: center; }
+.lineups-entry-txt b { font-size: 13.5px; font-weight: 800; letter-spacing: 0.2px; white-space: nowrap; }
+.lineups-entry-arrow { margin-left: auto; color: #2a0710; font-size: 22px; font-weight: 700; }
+.lineups-entry.is-back {
+  background: rgba(0, 0, 0, 0.22);
+  border-color: var(--border-2);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: none;
+}
+.lineups-entry.is-back .lineups-entry-ico { color: var(--gold); }
+
+/* Topbar */
+
+.topbar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 18px;
+  background: var(--pattern), linear-gradient(180deg, #6e1228, #540d20);
+  border-bottom: 1px solid var(--border-2);
+  box-shadow: 0 1px 0 rgba(224, 189, 99, 0.10), 0 6px 18px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+}
+
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 244px;
+  flex-shrink: 0;
+}
+
+.logo-mark {
+  color: var(--gold);
+  font-size: 22px;
+  text-shadow: 0 0 12px rgba(224, 189, 99, 0.45);
+}
+
+.logo-text {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 27px;
+  letter-spacing: 0.5px;
+  color: #fff;
+}
+
+.logo-text em {
+  font-style: normal;
+  color: var(--gold);
+}
+
+.topbar-match {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.topbar-match-empty {
+  display: flex;
+  align-items: center;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 19px;
+  letter-spacing: 1px;
+}
+
+/* gold rule + diamond flanking the tagline, echoing the WC2022 furniture */
+.topbar-match-empty::before,
+.topbar-match-empty::after {
+  content: '\25C6';                       /* ◆ */
+  color: var(--gold);
+  font-size: 7px;
+  line-height: 1;
+}
+
+.topbar-match-empty::before {
+  padding-left: 64px;
+  margin-right: 16px;
+  background: linear-gradient(90deg, transparent, var(--gold-deep)) left center / 56px 1px no-repeat;
+}
+
+.topbar-match-empty::after {
+  padding-right: 64px;
+  margin-left: 16px;
+  background: linear-gradient(90deg, var(--gold-deep), transparent) right center / 56px 1px no-repeat;
+}
+
+.topbar-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.topbar-flag {
+  width: 24px;
+  height: auto;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.topbar-score {
+  font-family: var(--font-cond);
+  font-weight: 800;
+  font-size: 26px;
+  color: var(--amber);
+  background: var(--amber-dim);
+  border: 1px solid rgba(240, 165, 0, 0.25);
+  border-radius: 6px;
+  padding: 0 12px;
+  line-height: 32px;
+}
+
+.topbar-meta {
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.topbar-badge {
+  font-family: var(--font-cond);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: #4a091b;
+  background: linear-gradient(135deg, #f0d488, var(--gold) 45%, var(--gold-deep));
+  padding: 6px 13px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(224, 189, 99, 0.25);
+}
+
+.topbar-wc {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.topbar-wc-emblem {
+  height: 46px;
+  width: auto;
+}
+
+.topbar-wc-word {
+  height: 32px;
+  width: auto;
+  /* recolor the maroon wordmark to white (preserves transparency + edges) */
+  filter: brightness(0) invert(1);
+}
+
+.topbar-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-2);
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+
+.topbar-reset:hover {
+  color: var(--text);
+  border-color: #ff6b81;
+  background: rgba(255, 107, 129, 0.08);
+}
+
+.topbar-reset-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* Shared bits */
+
+.panel-section-title {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 15px 14px 10px;
+}

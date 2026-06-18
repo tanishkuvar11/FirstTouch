@@ -1,0 +1,28 @@
+node_modules/
+dist/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.cf-venv/
+
+# Runtime cache (Granite output + StatsBomb frames). Deployment computes everything
+# LIVE (cloud Granite + Context Forge), so nothing here is shipped; it rebuilds on
+# the server. To instead ship a pre-baked cache, allow-list the *_cache.json files.
+backend/.firsttouch_cache/
+
+# Context Forge / MCP local gateway state (local-only, never deployed)
+backend/cf_gateway.db*
+backend/mcp.db*
+backend/.cf_token
+
+.env
+backend/.env
+frontend/.env
+*.env.local
+
+.DS_Store
+walkthrough.md
+DEPLOY.md
+
+.claude/settings.local.json

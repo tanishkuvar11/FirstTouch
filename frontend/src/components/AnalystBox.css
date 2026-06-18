@@ -1,0 +1,196 @@
+/* Victor's read, styled as a little notepad: cream paper, a glued top strip,
+   a red margin and ruled lines, with the analysis "written" in pen (Caveat). */
+.tp-analyst-box {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  z-index: 6;
+  width: 256px;
+  max-width: calc(100% - 32px);
+  /* never grow past the pitch: cap to the container height (works windowed and
+     fullscreen) and let the notes scroll inside instead of being clipped */
+  max-height: calc(100% - 86px);
+  display: flex;
+  flex-direction: column;
+  padding: 15px 11px 11px;
+  border-radius: 6px 6px 7px 7px;
+  background:
+    linear-gradient(#f4eedd, #efe7d2);
+  border: 1px solid #d8cdaf;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  pointer-events: auto;
+}
+
+/* glued/taped top of the pad */
+.tp-analyst-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 7px;
+  border-radius: 6px 6px 0 0;
+  background: repeating-linear-gradient(90deg, #cf9b3a 0 9px, #c08f31 9px 18px);
+  box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.tp-analyst-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(60, 90, 150, 0.28);
+  flex-shrink: 0;   /* header stays put; only the notes scroll */
+}
+
+/* when the notes are hidden, the header stands alone with no divider */
+.tp-analyst-box.is-collapsed .tp-analyst-head {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* show / hide notes toggle */
+.tp-analyst-toggle {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(20, 40, 78, 0.10);
+  border: 1px solid rgba(20, 40, 78, 0.22);
+  color: #1f3f7a;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, transform 0.1s;
+}
+
+.tp-analyst-toggle:hover {
+  background: rgba(20, 40, 78, 0.18);
+  color: #16284e;
+  transform: translateY(-1px);
+}
+
+.tp-analyst-toggle:active {
+  transform: translateY(0);
+}
+
+.tp-analyst-chev {
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.22s ease;
+}
+
+.tp-analyst-chev.is-closed {
+  transform: rotate(-90deg);
+}
+
+.tp-analyst-id { line-height: 1.15; }
+
+.tp-analyst-name {
+  font-family: 'Caveat', 'Segoe Script', cursive;
+  font-weight: 700;
+  font-size: 27px;
+  line-height: 0.95;
+  color: #16284e;
+  letter-spacing: 0.3px;
+}
+
+.tp-analyst-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px 8px;
+  margin-top: 3px;
+}
+
+.tp-analyst-role {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #1f3f7a;
+}
+
+.tp-analyst-powered {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #6a5326;
+}
+
+/* the writing area: red margin + ruled lines */
+.tp-analyst-body {
+  position: relative;
+  padding-left: 16px;
+  /* scroll long reads instead of overflowing the pitch */
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 95, 45, 0.45) transparent;
+}
+
+.tp-analyst-body::-webkit-scrollbar {
+  width: 7px;
+}
+
+.tp-analyst-body::-webkit-scrollbar-thumb {
+  background: rgba(120, 95, 45, 0.4);
+  border-radius: 4px;
+}
+
+/* red margin line */
+.tp-analyst-body::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: -2px;
+  bottom: 0;
+  width: 1px;
+  background: rgba(200, 70, 70, 0.55);
+}
+
+.tp-analyst-body p {
+  margin: 0;
+  font-family: 'Caveat', 'Segoe Script', cursive;
+  font-size: 18.5px;
+  line-height: 27px;
+  color: #1c2c4d;
+  /* faint ruled lines that grow with the text as it is written */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 26px,
+    rgba(60, 90, 150, 0.20) 26px,
+    rgba(60, 90, 150, 0.20) 27px
+  );
+}
+
+.tp-analyst-idle {
+  font-family: 'Caveat', 'Segoe Script', cursive;
+  font-size: 17px;
+  line-height: 1.4;
+  color: #5a6480;
+}
+
+/* the pen tip blinking as it writes */
+.tp-analyst-caret {
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  margin-left: 1px;
+  transform: translateY(3px);
+  background: #1c2c4d;
+  animation: tp-analyst-blink 0.85s steps(2, start) infinite;
+}
+
+@keyframes tp-analyst-blink {
+  to { opacity: 0; }
+}

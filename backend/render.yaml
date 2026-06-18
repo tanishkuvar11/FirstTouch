@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: firsttouch-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      # Cloud Granite for any moment not already in the baked cache.
+      - key: HF_TOKEN
+        sync: false
+      - key: WATSONX_API_KEY
+        sync: false
+      - key: WATSONX_PROJECT_ID
+        sync: false
+      - key: WATSONX_URL
+        value: https://us-south.ml.cloud.ibm.com
+      # No Context Forge gateway on deploy: What-If serves from the baked full
+      # cache, falling back to the in-process xT engine + cloud Granite verdict.
+      - key: CF_GATEWAY_DISABLED
+        value: "true"

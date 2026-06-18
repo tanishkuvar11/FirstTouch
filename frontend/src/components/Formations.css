@@ -1,0 +1,317 @@
+.fm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 14px 16px;
+  overflow: hidden;       /* everything fits; no scrolling for the tactics */
+  height: 100%;
+}
+
+.fm-empty, .fm-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 100%;
+  color: var(--text-2);
+  font-size: 14px;
+}
+.fm-loading { flex-direction: row; }
+.fm-empty-icon { font-size: 42px; opacity: 0.4; }
+
+.fm-spin {
+  width: 14px; height: 14px;
+  border: 2px solid var(--border-2);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: fm-spin 0.8s linear infinite;
+}
+@keyframes fm-spin { to { transform: rotate(360deg); } }
+
+.fm-team {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;            /* let the pitch flex-shrink so the card fits */
+  background: linear-gradient(180deg, var(--surface), rgba(70, 11, 28, 0.55));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 13px 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  animation: fm-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.fm-team-head { flex-shrink: 0; }
+@keyframes fm-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.fm-team-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 13px;
+}
+.fm-flag { width: 28px; height: 19px; border-radius: 3px; object-fit: cover; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+.fm-team-name { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: 0.2px; }
+.fm-formation {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #2a0710;
+  background: linear-gradient(135deg, var(--gold), #d8a94a);
+  border-radius: 7px;
+  padding: 4px 11px;
+  box-shadow: 0 2px 8px rgba(224, 189, 99, 0.3);
+}
+
+/* the half pitch (own goal at the bottom, halfway at the top). The pitch flexes
+   to fill the space left after the header + tactics, so everything fits without
+   scrolling. Players sit directly in here (overflow visible) so tooltips show;
+   the green turf + markings live in a clipped layer below them. */
+.fm-pitch {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  margin: 2px 0;
+}
+.fm-turf {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0) 0 9%, rgba(255,255,255,0.035) 9% 18%),
+    radial-gradient(120% 80% at 50% 100%, rgba(0,0,0,0.28), transparent 55%),
+    linear-gradient(180deg, #1f6f46 0%, #165d39 55%, #0f4a2d 100%);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.3);
+}
+
+/* markings */
+.fm-arc {
+  position: absolute;
+  left: 50%; top: -16%;
+  width: 30%; aspect-ratio: 1;
+  transform: translateX(-50%);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+}
+.fm-box {
+  position: absolute;
+  left: 24%; right: 24%; bottom: 0;
+  height: 22%;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+}
+.fm-six {
+  position: absolute;
+  left: 37%; right: 37%; bottom: 0;
+  height: 9%;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-bottom: none;
+}
+.fm-spot { position: absolute; left: 50%; bottom: 16%; width: 3px; height: 3px; background: rgba(255,255,255,0.5); border-radius: 50%; transform: translateX(-50%); }
+.fm-goal { position: absolute; left: 44%; right: 44%; bottom: 0; height: 4px; background: rgba(255, 255, 255, 0.6); border-radius: 2px 2px 0 0; }
+
+/* player chips */
+.fm-player {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  width: 0;
+  z-index: 2;
+}
+
+.fm-shirt-wrap { position: relative; display: inline-flex; }
+
+.fm-shirt {
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+  transition: transform 0.12s;
+  overflow: visible;
+}
+.fm-player:hover .fm-shirt { transform: scale(1.12); }
+/* lift the hovered player above its neighbours so its tooltip is never covered */
+.fm-player:hover { z-index: 30; }
+
+/* sub in/out arrow badge on the shirt */
+.fm-subbadge {
+  position: absolute;
+  top: -3px;
+  right: -5px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+.fm-sub-off { background: #e23b4e; }
+.fm-sub-on { background: #2bb673; }
+
+.fm-pname {
+  margin-top: 1px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(8, 14, 20, 0.55);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* goal/assist badges, pinned to the shirt's top-left corner */
+.fm-cbs {
+  position: absolute;
+  top: -6px;
+  left: -7px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  z-index: 4;
+}
+.fm-cb-goal {
+  display: inline-flex;
+  align-items: center;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+}
+.fm-cb-goal img { width: 16px; height: 16px; display: block; }
+.fm-cb-goal span {
+  margin-left: -3px;
+  padding: 0 3px;
+  border-radius: 6px;
+  background: rgba(8, 14, 20, 0.88);
+  font-size: 9px;
+  font-weight: 800;
+  color: #fff;
+}
+.fm-cb-assist {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 8px;
+  background: rgba(8, 14, 20, 0.88);
+  border: 1px solid rgba(143, 214, 255, 0.5);
+  font-size: 9px;
+  font-weight: 800;
+  color: #8fd6ff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.fm-cbs-sm { top: -5px; left: -6px; }
+.fm-cbs-sm .fm-cb-goal img { width: 13px; height: 13px; }
+.fm-cbs-sm .fm-cb-assist { min-width: 13px; height: 13px; font-size: 8px; }
+.fm-ball { display: block; object-fit: contain; }
+
+/* a substitute: greyed, sitting just behind the slot he took */
+.fm-ghost { z-index: 1; opacity: 0.5; }
+.fm-ghost .fm-pname { font-size: 8.5px; background: rgba(8, 14, 20, 0.45); }
+.fm-ghost:hover { opacity: 1; z-index: 31; }
+
+/* hover tooltip */
+.fm-tip {
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  flex-direction: column;
+  gap: 1px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: rgba(10, 16, 22, 0.98);
+  border: 1px solid var(--border-2);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  z-index: 12;
+  font-size: 10.5px;
+  color: var(--text-2);
+}
+.fm-tip b { color: var(--text); font-size: 12px; }
+.fm-tip-c { color: var(--green); font-weight: 600; }
+.fm-tip::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: 100%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(10, 16, 22, 0.98);
+}
+.fm-player:hover .fm-tip { display: flex; }
+
+/* top-row players: show the tooltip BELOW the shirt so it isn't cut off the top */
+.fm-flip .fm-tip { bottom: auto; top: calc(100% + 7px); }
+.fm-flip .fm-tip::after {
+  top: auto; bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: rgba(10, 16, 22, 0.98);
+}
+
+/* manager, on the touchline */
+.fm-manager {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 9px 5px 7px;
+  border-radius: 9px;
+  background: rgba(8, 14, 20, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(3px);
+  z-index: 3;
+}
+.fm-manager-ico { color: var(--gold); flex-shrink: 0; }
+.fm-manager-txt { display: flex; flex-direction: column; line-height: 1.15; }
+.fm-manager-txt small { font-size: 7.5px; letter-spacing: 1.2px; color: var(--text-3); font-family: var(--font-mono); }
+.fm-manager-txt b { font-size: 11.5px; color: #fff; font-weight: 700; }
+
+/* tactical read */
+.fm-tactics {
+  flex-shrink: 0;
+  margin-top: 12px;
+  padding: 11px 13px;
+  border-radius: 11px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-left: 3px solid var(--green);
+}
+.fm-tactics-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+.fm-granite { color: var(--green); letter-spacing: 0.5px; }
+.fm-prose {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.fm-prose-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+@media (max-width: 980px) {
+  .fm { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+statsbombpy
+pandas
+ibm-watsonx-ai
+langchain
+langchain-core
+langchain-ibm
+langchain-ollama
+langchain-mcp-adapters
+mcp
+huggingface_hub
+python-dotenv

@@ -1,0 +1,15 @@
+# keep the small baked caches (assess/explain/what-if) so deploy replays them,
+# but never bake the huge StatsBomb frame dumps into the image (they re-download)
+.firsttouch_cache/frames_*.json
+
+__pycache__/
+*.pyc
+.cf-venv/
+.venv/
+venv/
+cf_gateway.db
+cf_gateway.db-*
+mcp.db
+mcp.db-*
+.cf_token
+.env
