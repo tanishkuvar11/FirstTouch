@@ -36,9 +36,6 @@ export default function App() {
   const [loadingFrame, setLoadingFrame] = useState(false)
   const [explanation, setExplanation] = useState(null)
   const [explaining, setExplaining] = useState(false)
-  // show an official-tournament badge image if one is dropped in
-  // (frontend/public/wc2022-badge.png); otherwise fall back to the text badge
-  const [badgeImg, setBadgeImg] = useState(true)
   const [panelTab, setPanelTab] = useState('decision')
   const [assessment, setAssessment] = useState(null)
   const [assessing, setAssessing] = useState(false)
@@ -496,23 +493,7 @@ export default function App() {
 
         <LanguageSelect value={lang} onChange={setLang} />
 
-        {badgeImg ? (
-          <div className="topbar-wc">
-            <img
-              className="topbar-wc-emblem"
-              src="/wc2022-emblem.png"
-              alt=""
-              onError={() => setBadgeImg(false)}
-            />
-            <img
-              className="topbar-wc-word"
-              src="/wc2022-wordmark.png"
-              alt="FIFA World Cup Qatar 2022"
-            />
-          </div>
-        ) : (
-          <div className="topbar-badge">FIFA WORLD CUP 2022</div>
-        )}
+        <div className="topbar-wc-text">FIFA World Cup Qatar 2022</div>
       </header>
 
       <div className="app-body">
