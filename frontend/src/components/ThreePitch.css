@@ -75,6 +75,10 @@
   text-shadow: 0 4px 30px rgba(0, 0, 0, 0.95);
 }
 
+.tp-gold {
+  color: var(--gold);
+}
+
 .tp-empty-sub {
   font-family: var(--font);
   font-weight: 600;

@@ -1647,8 +1647,9 @@ export default function ThreePitch({ frameData, activeEvent, match, liveScore, l
       {/* empty state */}
       {!match && !frameData && (
         <div className="tp-empty">
-          <div className="tp-empty-eyebrow">{tr('Welcome to FirstTouch')}</div>
-          <div className="tp-empty-title">{tr('SELECT MATCH')}</div>
+          <div className="tp-empty-title">
+            {tr('FIRST')}<span className="tp-gold">{tr('TOUCH')}</span>
+          </div>
           <div className="tp-empty-sub">{tr('FIFA World Cup 2022™ · 64 matches · Full 360° freeze-frame coverage')}</div>
         </div>
       )}
