@@ -400,9 +400,12 @@ def _credentials_present() -> bool:
 
 
 def _granite_generate(prompt: str, max_tokens: int = 180, temperature: float = 0.55) -> str:
+    """Granite via watsonx.ai, using the CHAT API. Granite instruct/hybrid models
+    (e.g. granite-4-h-small) are chat-native: the deprecated text-completion call
+    makes them echo the prompt, so the single-turn prompt is wrapped as a user
+    message and sent through chat instead."""
     from ibm_watsonx_ai import APIClient, Credentials
     from ibm_watsonx_ai.foundation_models import ModelInference
-    from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
 
     credentials = Credentials(
         url=os.getenv("WATSONX_URL", "https://us-south.ml.cloud.ibm.com"),
@@ -410,18 +413,17 @@ def _granite_generate(prompt: str, max_tokens: int = 180, temperature: float = 0
     )
     client = APIClient(credentials, project_id=os.getenv("WATSONX_PROJECT_ID"))
     model = ModelInference(
-        model_id=os.getenv("WATSONX_MODEL_ID", "ibm/granite-3-8b-instruct"),
+        model_id=os.getenv("WATSONX_MODEL_ID", "ibm/granite-4-h-small"),
         api_client=client,
-        params={
-            GenParams.MAX_NEW_TOKENS: max_tokens,
-            GenParams.TEMPERATURE: temperature,
-        },
     )
-    response = model.generate_text(prompt=prompt)
+    response = model.chat(
+        messages=[{"role": "user", "content": prompt}],
+        params={"max_tokens": max_tokens, "temperature": temperature},
+    )
     if isinstance(response, dict):
-        results = response.get("results") or []
-        if results:
-            return results[0].get("generated_text", "").strip()
+        choices = response.get("choices") or []
+        if choices:
+            return (choices[0].get("message") or {}).get("content", "").strip()
     return str(response).strip()
 
 
