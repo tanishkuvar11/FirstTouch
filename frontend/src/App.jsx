@@ -17,7 +17,7 @@ import { getAnalyst, DEFAULT_LANG } from './analyst.js'
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 // the project's public repo, shown in the footer (override via VITE_GITHUB_URL)
-const GITHUB_URL = import.meta.env.VITE_GITHUB_URL || 'https://github.com/tanishkuvar/firsttouch'
+const GITHUB_URL = import.meta.env.VITE_GITHUB_URL || 'https://github.com/tanishkuvar11/FirstTouch'
 
 // once Granite has assessed a moment, keep it so re-clicking the same event is
 // instant (no spinner, no refetch). Keyed by match + event id; survives navigation.
