@@ -5,7 +5,7 @@ colorTo: yellow
 sdk: docker
 app_port: 7860
 pinned: false
-short_description: World Cup 2022 decision intelligence (IBM Granite + Context Forge)
+short_description: WC2022 3D decision intelligence (Granite + Context Forge)
 ---
 
 # FirstTouch API (Hugging Face Space)
