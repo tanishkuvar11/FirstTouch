@@ -168,3 +168,9 @@ frontend/  src/components (3D pitch, decision panel, timeline, line-ups, languag
 An IBM Granite and watsonx.ai showcase for the IBM SkillsBuild AI Builders Challenge.
 Data by [StatsBomb Open Data](https://github.com/statsbomb/open-data) (World Cup 2022,
 competition 43, season 106; all 64 matches with full 360 coverage).
+
+## License
+
+Released under the [MIT License](LICENSE).
+
+Third-party assets are not covered by this license and remain governed by their own terms: StatsBomb Open Data, the Qatar 2022 display font, images sourced from Wikipedia, and any tournament names or marks.
