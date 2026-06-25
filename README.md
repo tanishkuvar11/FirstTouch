@@ -51,7 +51,7 @@ Built for the **IBM SkillsBuild AI Builders Challenge**.
 
 | Analyst | Language | Role |
 | --- | --- | --- |
-| **Nathan** | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 English | Tactical Analyst |
+| **Nathan** | 🇬🇧 English | Tactical Analyst |
 | **Valeria** | 🇪🇸 Español | Analista Táctica |
 | **Claire** | 🇫🇷 Français | Analyste Tactique |
 | **Lukas** | 🇩🇪 Deutsch | Taktikanalyst |
