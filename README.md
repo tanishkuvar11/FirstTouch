@@ -51,10 +51,10 @@ Built for the **IBM SkillsBuild AI Builders Challenge**.
 
 | Analyst | Language | Role |
 | --- | --- | --- |
-| **Nathan** | English | Tactical Analyst |
-| **Valeria** | Español | Analista Táctica |
-| **Claire** | Français | Analyste Tactique |
-| **Lukas** | Deutsch | Taktikanalyst |
+| **Nathan** | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 English | Tactical Analyst |
+| **Valeria** | 🇪🇸 Español | Analista Táctica |
+| **Claire** | 🇫🇷 Français | Analyste Tactique |
+| **Lukas** | 🇩🇪 Deutsch | Taktikanalyst |
 
 - One picker switches both the analyst and the entire UI (EN / ES / FR / DE).
 - Prose is always written by Granite, never hardcoded, so it reads naturally per language.
@@ -107,8 +107,16 @@ data_layer   granite_client   whatif_chain   tactical_analysis
 ```
 
 - Granite chain: **watsonx.ai -> local Ollama (dev) -> deterministic local fallback.**
-- The fallback is a full tactical engine, labelled a local estimate, so the app is never broken.
 - **Endpoints:** `/health` · `/matches` · `/matches/{id}/events` · `/matches/{id}/frames/{event_id}` · `/matches/{id}/teamsheet` · `POST /assess` · `POST /explain/stream` · `POST /whatif` · `POST /manager-tactics`
+
+## Reliability
+
+The app never breaks, even when Granite is unreachable (rate limit, quota, network).
+
+- **Cached first:** Every Granite verdict and analyst read is cached per moment. A moment seen once replays instantly and never calls the model again, so cached moments keep showing real Granite output regardless of quota.
+- **Pre-baked cache:** Verdicts can be generated ahead of time (`backend/precompute_cache.py`) and shipped in the image, so a fresh deploy serves real Granite from the first click.
+- **Graceful fallback:** If a moment is uncached and Granite is down, a full deterministic tactical engine produces the score and prose instead. It is clearly marked with a **local estimate** tag in the UI, so a fallback result is never mistaken for a live Granite verdict.
+- **Honest health:** `/health` reports the active Granite backend.
 
 ## Run Locally
 
